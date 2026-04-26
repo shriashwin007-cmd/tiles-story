@@ -980,6 +980,296 @@ input,textarea,button{font-size:16px;} /* prevent iOS zoom */
   .lg{backdrop-filter:none !important;}
   .cat-chip{backdrop-filter:none !important;}
 }
+
+/* AI CHATBOT */
+.ai-chat-fab{
+  position:fixed;
+  bottom:2rem;right:2rem;
+  z-index:1500;
+  width:60px;height:60px;
+  border-radius:50%;
+  background:linear-gradient(135deg,var(--teal-primary),var(--teal-deep));
+  box-shadow:0 8px 24px rgba(78,205,196,.4),0 0 60px rgba(78,205,196,.2);
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .35s var(--ease-spring);
+  border:2px solid rgba(255,255,255,.2);
+  backdrop-filter:blur(12px);
+}
+.ai-chat-fab:hover{transform:scale(1.1);box-shadow:0 12px 36px rgba(78,205,196,.6),0 0 80px rgba(78,205,196,.3);}
+.ai-chat-fab svg{width:28px;height:28px;color:#fff;}
+.ai-chat-fab.open{transform:scale(0.9);opacity:0;pointer-events:none;}
+
+.ai-chat-panel{
+  position:fixed;
+  bottom:2rem;right:2rem;
+  z-index:1499;
+  width:min(420px,calc(100vw - 3rem));
+  height:min(600px,calc(100vh - 5rem));
+  background:rgba(7,20,24,.95);
+  border:1px solid var(--border-teal);
+  border-radius:1.4rem;
+  backdrop-filter:blur(28px);
+  box-shadow:0 30px 80px rgba(0,0,0,.7),0 0 80px rgba(78,205,196,.15);
+  transform:translateY(120%) scale(0.9);
+  opacity:0;
+  pointer-events:none;
+  transition:transform .5s var(--ease-spring),opacity .5s;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+.ai-chat-panel.open{transform:translateY(0) scale(1);opacity:1;pointer-events:auto;}
+
+/* Header */
+.ai-chat-header{
+  padding:1.3rem 1.5rem;
+  border-bottom:1px solid rgba(78,205,196,.2);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  background:rgba(78,205,196,.08);
+}
+.ai-chat-title{
+  display:flex;
+  align-items:center;
+  gap:.7rem;
+}
+.ai-chat-avatar{
+  width:36px;height:36px;
+  border-radius:50%;
+  background:linear-gradient(135deg,var(--teal-primary),var(--yellow-bright));
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.1rem;
+}
+.ai-chat-title-text h3{
+  font-family:var(--font-display);
+  font-size:.95rem;
+  color:#fff;
+  letter-spacing:.06em;
+  margin:0;
+}
+.ai-chat-title-text p{
+  font-family:var(--font-ui);
+  font-size:.55rem;
+  color:rgba(78,205,196,.9);
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  margin:.15rem 0 0 0;
+}
+.ai-chat-close{
+  width:32px;height:32px;
+  border-radius:50%;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.15);
+  color:var(--text-primary);
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .3s;
+}
+.ai-chat-close:hover{background:rgba(255,80,80,.2);border-color:#ff8080;transform:rotate(90deg);}
+
+/* Messages */
+.ai-chat-messages{
+  flex:1;
+  overflow-y:auto;
+  padding:1.5rem;
+  display:flex;
+  flex-direction:column;
+  gap:1rem;
+}
+.ai-chat-messages::-webkit-scrollbar{width:4px;}
+.ai-chat-messages::-webkit-scrollbar-thumb{background:rgba(78,205,196,.3);border-radius:2px;}
+
+.ai-msg{
+  display:flex;
+  gap:.7rem;
+  animation:msgSlideIn .4s var(--ease-spring);
+}
+@keyframes msgSlideIn{from{opacity:0;transform:translateY(10px);}}
+
+.ai-msg.user{flex-direction:row-reverse;}
+.ai-msg-avatar{
+  width:32px;height:32px;
+  border-radius:50%;
+  flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.85rem;
+}
+.ai-msg.assistant .ai-msg-avatar{
+  background:linear-gradient(135deg,var(--teal-primary),var(--yellow-bright));
+}
+.ai-msg.user .ai-msg-avatar{
+  background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.2);
+}
+.ai-msg-content{
+  max-width:75%;
+  padding:1rem 1.2rem;
+  border-radius:1rem;
+  font-family:var(--font-body);
+  font-size:.85rem;
+  line-height:1.6;
+  color:var(--text-primary);
+}
+.ai-msg.assistant .ai-msg-content{
+  background:rgba(78,205,196,.1);
+  border:1px solid rgba(78,205,196,.2);
+  border-radius:1rem 1rem 1rem .3rem;
+}
+.ai-msg.user .ai-msg-content{
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:1rem 1rem .3rem 1rem;
+}
+
+/* Typing indicator */
+.ai-typing{
+  display:flex;
+  gap:.7rem;
+  align-items:center;
+}
+.ai-typing-dots{
+  display:flex;
+  gap:.3rem;
+  padding:.8rem 1.2rem;
+  background:rgba(78,205,196,.1);
+  border:1px solid rgba(78,205,196,.2);
+  border-radius:1rem;
+}
+.ai-typing-dot{
+  width:6px;height:6px;
+  border-radius:50%;
+  background:var(--teal-primary);
+  animation:aiTyping 1.4s infinite;
+}
+.ai-typing-dot:nth-child(2){animation-delay:.2s;}
+.ai-typing-dot:nth-child(3){animation-delay:.4s;}
+@keyframes aiTyping{0%,60%,100%{opacity:.3;transform:scale(0.8);}30%{opacity:1;transform:scale(1.1);}}
+
+/* Product cards in chat */
+.ai-product-card{
+  background:rgba(10,28,32,.6);
+  border:1px solid rgba(78,205,196,.25);
+  border-radius:.9rem;
+  overflow:hidden;
+  margin:.5rem 0;
+  cursor:pointer;
+  transition:all .3s;
+}
+.ai-product-card:hover{border-color:var(--teal-primary);transform:translateY(-2px);}
+.ai-product-img{
+  width:100%;
+  aspect-ratio:4/3;
+  object-fit:cover;
+}
+.ai-product-info{
+  padding:.9rem;
+}
+.ai-product-name{
+  font-family:var(--font-display);
+  font-size:.9rem;
+  color:#fff;
+  margin:0 0 .3rem 0;
+}
+.ai-product-meta{
+  font-family:var(--font-ui);
+  font-size:.6rem;
+  color:rgba(255,255,255,.6);
+  letter-spacing:.1em;
+  text-transform:uppercase;
+}
+.ai-product-reason{
+  font-family:var(--font-body);
+  font-size:.75rem;
+  color:rgba(78,205,196,.9);
+  margin:.5rem 0 0 0;
+  font-style:italic;
+}
+
+/* Input */
+.ai-chat-input-wrap{
+  padding:1rem 1.2rem;
+  border-top:1px solid rgba(78,205,196,.2);
+  background:rgba(7,20,24,.8);
+  display:flex;
+  gap:.6rem;
+}
+.ai-chat-input{
+  flex:1;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:.7rem;
+  padding:.85rem 1rem;
+  font-family:var(--font-body);
+  font-size:.85rem;
+  color:#fff;
+  outline:none;
+  transition:all .3s;
+}
+.ai-chat-input:focus{border-color:var(--teal-primary);background:rgba(255,255,255,.08);}
+.ai-chat-input::placeholder{color:rgba(255,255,255,.4);}
+.ai-chat-send{
+  width:44px;height:44px;
+  border-radius:.7rem;
+  background:linear-gradient(135deg,var(--teal-primary),var(--teal-deep));
+  border:none;
+  color:#fff;
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .3s;
+  box-shadow:0 4px 12px rgba(78,205,196,.3);
+}
+.ai-chat-send:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(78,205,196,.5);}
+.ai-chat-send:disabled{opacity:.5;cursor:not-allowed;}
+
+/* Welcome screen */
+.ai-welcome{
+  text-align:center;
+  padding:2rem 1.5rem;
+}
+.ai-welcome-icon{
+  font-size:3rem;
+  margin-bottom:1rem;
+}
+.ai-welcome h3{
+  font-family:var(--font-editorial);
+  font-size:1.4rem;
+  color:#fff;
+  margin:0 0 .5rem 0;
+}
+.ai-welcome p{
+  font-family:var(--font-body);
+  font-size:.85rem;
+  color:rgba(255,255,255,.7);
+  line-height:1.6;
+  margin:0 0 1.5rem 0;
+}
+.ai-suggestions{
+  display:flex;
+  flex-direction:column;
+  gap:.5rem;
+}
+.ai-suggestion{
+  padding:.7rem 1rem;
+  background:rgba(78,205,196,.08);
+  border:1px solid rgba(78,205,196,.2);
+  border-radius:.6rem;
+  font-family:var(--font-body);
+  font-size:.8rem;
+  color:rgba(255,255,255,.85);
+  cursor:pointer;
+  transition:all .3s;
+  text-align:left;
+}
+.ai-suggestion:hover{background:rgba(78,205,196,.15);border-color:var(--teal-primary);}
+
+/* Mobile adjustments */
+@media (max-width:768px){
+  .ai-chat-fab{bottom:1.2rem;right:1.2rem;width:54px;height:54px;}
+  .ai-chat-panel{bottom:1.2rem;right:1.2rem;width:calc(100vw - 2.4rem);height:calc(100vh - 3rem);}
+  .ai-msg-content{font-size:.8rem;}
+}
 </style>
 </head>
 <body>
@@ -1070,7 +1360,7 @@ input,textarea,button{font-size:16px;} /* prevent iOS zoom */
 <section class="hero" id="hero">
   <div class="hero-video-wrap">
     <video autoplay muted loop playsinline preload="auto" id="heroBgVideo">
-      <source src="https://res.cloudinary.com/deibpflar/video/upload/tilestory/hero_bg.mp4" type="video/mp4">
+      <source src="https://raw.githubusercontent.com/shriashwin007-cmd/tilestory-assets/main/hero_bg.mp4" type="video/mp4">
     </video>
   </div>
   <div class="hero-vignette"></div>
@@ -1174,7 +1464,7 @@ input,textarea,button{font-size:16px;} /* prevent iOS zoom */
       <div class="sv-corner bl"></div>
       <div class="sv-corner br"></div>
       <video id="svVideo" muted loop playsinline preload="metadata">
-        <source src="https://res.cloudinary.com/deibpflar/video/upload/tilestory/scroll_reveal.mp4" type="video/mp4">
+        <source src="https://raw.githubusercontent.com/shriashwin007-cmd/tilestory-assets/main/scroll_reveal.mp4" type="video/mp4">
       </video>
       <div class="sv-vid-edge"></div>
     </div>
@@ -1193,13 +1483,13 @@ input,textarea,button{font-size:16px;} /* prevent iOS zoom */
       <div class="zp-intro-label">Our Collections</div>
       <h2 class="zp-intro-title">Zoom Into <em>Luxury</em></h2>
     </div>
-    <div class="zp-layer" id="zpL0"><div class="zp-inner" style="width:25vw;height:25vh;top:0;left:0;"><img src="https://res.cloudinary.com/deibpflar/image/upload/tilestory/large_slab_2.jpg" alt="Moroccan floor tiles" loading="eager"></div></div>
-    <div class="zp-layer" id="zpL1"><div class="zp-inner" style="width:35vw;height:30vh;top:-30vh;left:5vw;"><img src="https://res.cloudinary.com/deibpflar/image/upload/tilestory/bathroom_3.jpg" alt="Blue Moroccan closeup" loading="eager"></div></div>
-    <div class="zp-layer" id="zpL2"><div class="zp-inner" style="width:20vw;height:45vh;top:-10vh;left:-25vw;"><img src="https://res.cloudinary.com/deibpflar/image/upload/tilestory/moraccan_1.jpg" alt="Tile Story showroom" loading="eager"></div></div>
-    <div class="zp-layer" id="zpL3"><div class="zp-inner" style="width:25vw;height:25vh;top:0;left:27.5vw;"><img src="https://res.cloudinary.com/deibpflar/image/upload/tilestory/designer_2.jpg" alt="Large slab flooring" loading="eager"></div></div>
-    <div class="zp-layer" id="zpL4"><div class="zp-inner" style="width:20vw;height:25vh;top:27.5vh;left:5vw;"><img src="https://res.cloudinary.com/deibpflar/image/upload/tilestory/elevation_1.jpg" alt="Designer tiles" loading="eager"></div></div>
-    <div class="zp-layer" id="zpL5"><div class="zp-inner" style="width:30vw;height:25vh;top:27.5vh;left:-22.5vw;"><img src="https://res.cloudinary.com/deibpflar/image/upload/tilestory/imported_tiles_1.jpg" alt="Moroccan pattern" loading="eager"></div></div>
-    <div class="zp-layer" id="zpL6"><div class="zp-inner" style="width:15vw;height:15vh;top:22.5vh;left:25vw;"><img src="https://res.cloudinary.com/deibpflar/image/upload/tilestory/parking_1.jpg" alt="Showroom interior" loading="eager"></div></div>
+    <div class="zp-layer" id="zpL0"><div class="zp-inner" style="width:25vw;height:25vh;top:0;left:0;"><img src="https://raw.githubusercontent.com/shriashwin007-cmd/tilestory-assets/main/large_slab_2.jpg" alt="Moroccan floor tiles" loading="eager"></div></div>
+    <div class="zp-layer" id="zpL1"><div class="zp-inner" style="width:35vw;height:30vh;top:-30vh;left:5vw;"><img src="https://raw.githubusercontent.com/shriashwin007-cmd/tilestory-assets/main/bathroom_3.jpg" alt="Blue Moroccan closeup" loading="eager"></div></div>
+    <div class="zp-layer" id="zpL2"><div class="zp-inner" style="width:20vw;height:45vh;top:-10vh;left:-25vw;"><img src="https://raw.githubusercontent.com/shriashwin007-cmd/tilestory-assets/main/moraccan_1.jpg" alt="Tile Story showroom" loading="eager"></div></div>
+    <div class="zp-layer" id="zpL3"><div class="zp-inner" style="width:25vw;height:25vh;top:0;left:27.5vw;"><img src="https://raw.githubusercontent.com/shriashwin007-cmd/tilestory-assets/main/designer_2.jpg" alt="Large slab flooring" loading="eager"></div></div>
+    <div class="zp-layer" id="zpL4"><div class="zp-inner" style="width:20vw;height:25vh;top:27.5vh;left:5vw;"><img src="https://raw.githubusercontent.com/shriashwin007-cmd/tilestory-assets/main/elevation_1.jpg" alt="Designer tiles" loading="eager"></div></div>
+    <div class="zp-layer" id="zpL5"><div class="zp-inner" style="width:30vw;height:25vh;top:27.5vh;left:-22.5vw;"><img src="https://raw.githubusercontent.com/shriashwin007-cmd/tilestory-assets/main/imported_tiles_1.jpg" alt="Moroccan pattern" loading="eager"></div></div>
+    <div class="zp-layer" id="zpL6"><div class="zp-inner" style="width:15vw;height:15vh;top:22.5vh;left:25vw;"><img src="https://raw.githubusercontent.com/shriashwin007-cmd/tilestory-assets/main/parking_1.jpg" alt="Showroom interior" loading="eager"></div></div>
   </div>
 </section>
 
@@ -1541,6 +1831,55 @@ input,textarea,button{font-size:16px;} /* prevent iOS zoom */
   </div>
 </div>
 
+
+<!-- AI CHATBOT -->
+<button class="ai-chat-fab" id="aiChatFab" aria-label="AI Assistant">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+  </svg>
+</button>
+
+<div class="ai-chat-panel" id="aiChatPanel">
+  <div class="ai-chat-header">
+    <div class="ai-chat-title">
+      <div class="ai-chat-avatar">🤖</div>
+      <div class="ai-chat-title-text">
+        <h3>Tile Assistant</h3>
+        <p>Powered by Claude AI</p>
+      </div>
+    </div>
+    <button class="ai-chat-close" onclick="closeAIChat()">✕</button>
+  </div>
+  
+  <div class="ai-chat-messages" id="aiChatMessages">
+    <div class="ai-welcome">
+      <div class="ai-welcome-icon">✨</div>
+      <h3>Hi! I'm your tile expert</h3>
+      <p>I can help you find the perfect tiles for your project. Just tell me what you're looking for!</p>
+      <div class="ai-suggestions">
+        <div class="ai-suggestion" onclick="sendSuggestion(this)">i want bathroom feel like luxury hotel</div>
+        <div class="ai-suggestion" onclick="sendSuggestion(this)">my wife like gold colour shiny things</div>
+        <div class="ai-suggestion" onclick="sendSuggestion(this)">need something look expensive but not too much money</div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="ai-chat-input-wrap">
+    <input 
+      type="text" 
+      class="ai-chat-input" 
+      id="aiChatInput" 
+      placeholder="Ask me anything about tiles..."
+      onkeypress="if(event.key==='Enter')sendAIMessage()"
+    />
+    <button class="ai-chat-send" onclick="sendAIMessage()" id="aiSendBtn">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+      </svg>
+    </button>
+  </div>
+</div>
+
 <!-- FOOTER -->
 <footer class="footer">
   <div class="footer-inner">
@@ -1692,7 +2031,7 @@ document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
 
 // CATALOG SYSTEM
 // ============ CATALOG SYSTEM ============
-const PRODUCTS = [{"id":"TS001","name":"Nordic Gray Wood","category":"Flooring","colors":["#8B8B8B","#A9A9A9","#D3D3D3"],"finish":"Matte","size":"600x1200mm","use":["Living Room","Bedroom"],"desc":"Scandinavian-inspired wood-look porcelain with realistic grain texture","image":"https://res.cloudinary.com/deibpflar/image/upload/tilestory/living_room_1.jpg","tags":["wood-look","modern","gray"]},{"id":"TS002","name":"Carrara White Marble","category":"Flooring","colors":["#F5F5F5","#E8E8E8","#BEBEBE"],"finish":"Polished","size":"800x800mm","use":["Bedroom","Lobby"],"desc":"Classic Italian white marble with subtle gray veining","image":"https://res.cloudinary.com/deibpflar/image/upload/tilestory/living_room_2.jpg","tags":["marble","luxury","white"]},{"id":"TS003","name":"Warm Oak Plank","category":"Flooring","colors":["#C19A6B","#8B7355","#D2B48C"],"finish":"Matte","size":"200x1200mm","use":["Living Room","Kitchen"],"desc":"Natural oak wood-look tile with warm honey tones","image":"https://res.cloudinary.com/deibpflar/image/upload/tilestory/living_room_3.jpg","tags":["wood-look","warm","natural"]},{"id":"TS004","name":"Imperial Gray Marble","category":"Flooring","colors":["#A8A8A8","#909090","#C0C0C0"],"finish":"Polished","size":"800x1600mm","use":["Living Room","Dining"],"desc":"Large format gray marble with elegant veining pattern","image":"https://res.cloudinary.com/deibpflar/image/upload/tilestory/large_slab_4.jpg","tags":["marble","gray","large-format"]},{"id":"TS005","name":"Azure Gold Luxury","category":"Bathroom","colors":["#4682B4","#DAA520","#2F4F4F"],"finish":"Glossy","size":"600x1200mm","use":["Bathroom","Shower"],"desc":"Dramatic blue marble with gold veining \u2014 statement bathroom walls","image":"https://res.cloudinary.com/deibpflar/image/upload/tilestory/bathroom_3.jpg","tags":["luxury","blue","gold","marble"]},{"id":"TS006","name":"Sahara Beige Textured","category":"Bathroom","colors":["#F5DEB3","#D2B48C","#E8D5C4"],"finish":"Matte","size":"300x600mm","use":["Bathroom","Powder Room"],"desc":"Soft beige with ribbed texture accent strip for spa-like bathrooms","image":"https://res.cloudinary.com/deibpflar/image/upload/tilestory/bathroom_1.jpg","tags":["beige","textured","neutral"]},{"id":"TS007","name":"Nero Marquina Black","category":"Bathroom","colors":["#1C1C1C","#FFFFFF","#DAA520"],"finish":"Polished","size":"600x1200mm","use":["Shower","Feature Wall"],"desc":"Luxurious black marble with white veins \u2014 pairs with gold fixtures","image":"https://res.cloudinary.com/deibpflar/image/upload/tilestory/bathroom_2.jpg","tags":["black","marble","luxury","gold-accent"]},{"id":"TS008","name":"Pearl White Subway","category":"Bathroom","colors":["#FAFAFA","#E0E0E0","#F8F8F8"],"finish":"Glossy","size":"75x150mm","use":["Bathroom","Kitchen Backsplash"],"desc":"Timeless white subway tiles with subtle pearl shimmer","image":"https://res.cloudinary.com/deibpflar/image/upload/tilestory/bathroom_2.jpg","tags":["white","classic","subway"]},{"id":"TS009","name":"Fes Blue Pattern","category":"Moroccan","colors":["#1E3A8A","#F59E0B","#FBBF24"],"finish":"Matte","size":"200x200mm","use":["Kitchen","Bathroom","Feature Wall"],"desc":"Handcrafted Moroccan encaustic tiles \u2014 blue, gold, cream geometric patterns","image":"https://res.cloudinary.com/deibpflar/image/upload/tilestory/moraccan_1.jpg","tags":["pattern","blue","traditional","handcrafted"]},{"id":"TS010","name":"Marrakech Kitchen Mix","category":"Moroccan","colors":["#2563EB","#F97316","#78716C"],"finish":"Matte","size":"200x200mm","use":["Kitchen Floor","Backsplash"],"desc":"Mixed Moroccan pattern tiles \u2014 kitchen and dining floors","image":"https://res.cloudinary.com/deibpflar/image/upload/tilestory/moraccan_2.jpg","tags":["pattern","blue","orange","mix"]},{"id":"TS011","name":"Hexwood Gold Accent","category":"Moroccan","colors":["#A0826D","#DAA520","#8B7355"],"finish":"Matte","size":"200x230mm","use":["Feature Wall","Living Room"],"desc":"Geometric hexagon tiles with wood texture and gold brass inlay","image":"https://res.cloudinary.com/deibpflar/image/upload/tilestory/moraccan_3.jpg","tags":["hexagon","wood","gold","geometric"]},{"id":"TS012","name":"Calacatta Gold Vein","category":"Large Slab","colors":["#FAFAFA","#DAA520","#E8E8E8"],"finish":"Polished","size":"1600x3200mm","use":["Living Room","Lobby","Feature Wall"],"desc":"Book-matched Calacatta marble slabs with dramatic gold veining","image":"https://res.cloudinary.com/deibpflar/image/upload/tilestory/large_slab_2.jpg","tags":["marble","gold","book-matched","XXL"]},{"id":"TS013","name":"Silver Cloud Marble","category":"Large Slab","colors":["#D3D3D3","#A9A9A9","#F5F5F5"],"finish":"Polished","size":"800x1600mm","use":["Living Room","Dining"],"desc":"Contemporary gray marble with cloud-like patterns \u2014 large format slabs","image":"https://res.cloudinary.com/deibpflar/image/upload/tilestory/large_slab_3.jpg","tags":["gray","marble","contemporary"]},{"id":"TS014","name":"Platinum Vein Slab","category":"Large Slab","colors":["#C0C0C0","#808080","#EBEBEB"],"finish":"Polished","size":"1200x2400mm","use":["Lobby","Living Room"],"desc":"Premium gray marble slabs with linear platinum veining","image":"https://res.cloudinary.com/deibpflar/image/upload/tilestory/large_slab_1.jpg","tags":["gray","marble","linear","premium"]},{"id":"TS015","name":"Emperador Gold XL","category":"Large Slab","colors":["#8B7355","#DAA520","#D2B48C"],"finish":"Polished","size":"1600x3200mm","use":["Feature Wall","Lobby"],"desc":"Statement brown marble slabs with symmetrical gold accents","image":"https://res.cloudinary.com/deibpflar/image/upload/tilestory/large_slab_2.jpg","tags":["brown","gold","statement","XXL"]},{"id":"TS016","name":"Industrial Concrete Gray","category":"Designer","colors":["#808080","#696969","#D3D3D3"],"finish":"Matte","size":"600x600mm","use":["Dining","Office","Commercial"],"desc":"Modern industrial concrete-look tiles with natural texture variation","image":"https://res.cloudinary.com/deibpflar/image/upload/tilestory/designer_2.jpg","tags":["concrete","industrial","gray"]},{"id":"TS017","name":"Terracotta Earth Tone","category":"Designer","colors":["#CD5C5C","#D2691E","#BC8F8F"],"finish":"Matte","size":"300x300mm","use":["Bedroom","Rustic Spaces"],"desc":"Warm terracotta clay tiles \u2014 Mediterranean charm for bedrooms","image":"https://res.cloudinary.com/deibpflar/image/upload/tilestory/designer_3.jpg","tags":["terracotta","warm","rustic","earth"]},{"id":"TS018","name":"3D Wave White Panel","category":"Designer","colors":["#FFFFFF","#F5F5F5","#E8E8E8"],"finish":"Matte","size":"400x1200mm","use":["Feature Wall","Bedroom"],"desc":"Sculptural 3D wave pattern ceramic panels \u2014 creates depth and shadow play","image":"https://res.cloudinary.com/deibpflar/image/upload/tilestory/imported_tiles_1.jpg","tags":["3D","white","sculptural","modern"]},{"id":"TS019","name":"Geometric Wood Mosaic","category":"Designer","colors":["#8B7355","#DAA520","#A0826D"],"finish":"Matte","size":"Custom Mosaic","use":["Feature Wall","Accent"],"desc":"Intricate geometric pattern combining wood-look tiles with gold brass inlay","image":"https://res.cloudinary.com/deibpflar/image/upload/tilestory/moraccan_3.jpg","tags":["geometric","wood","mosaic","gold"]},{"id":"TS020","name":"Statuario Venato Italian","category":"Imported","colors":["#FAFAFA","#808080","#E8E8E8"],"finish":"Polished","size":"600x1200mm","use":["Lobby","Bathroom","Living Room"],"desc":"Premium Italian white marble with bold gray veining \u2014 imported from Carrara","image":"https://res.cloudinary.com/deibpflar/image/upload/tilestory/imported_tiles_1.jpg","tags":["italian","marble","white","premium"]},{"id":"TS021","name":"Spanish Concrete Modern","category":"Imported","colors":["#A8A8A8","#696969","#D3D3D3"],"finish":"Matte","size":"600x1200mm","use":["Dining","Living Room"],"desc":"Contemporary Spanish porcelain with authentic concrete texture","image":"https://res.cloudinary.com/deibpflar/image/upload/tilestory/imported_tiles_2.jpg","tags":["spanish","concrete","modern","porcelain"]},{"id":"TS022","name":"Tuscan Clay Rustic","category":"Imported","colors":["#CD5C5C","#D2691E","#8B4513"],"finish":"Matte","size":"300x300mm","use":["Bedroom","Villa"],"desc":"Authentic Italian terracotta imported from Tuscany \u2014 rustic warmth","image":"https://res.cloudinary.com/deibpflar/image/upload/tilestory/imported_tiles_3.jpg","tags":["italian","terracotta","rustic","tuscan"]},{"id":"TS023","name":"Modern Beige Facade","category":"Elevation","colors":["#F5DEB3","#D2B48C","#E8D5C4"],"finish":"Matte","size":"600x600mm","use":["Exterior Wall","Facade"],"desc":"Contemporary beige elevation tiles \u2014 sleek modern architecture","image":"https://res.cloudinary.com/deibpflar/image/upload/tilestory/elevation_1.jpg","tags":["beige","modern","facade","exterior"]},{"id":"TS024","name":"Classic Brick Cladding","category":"Elevation","colors":["#CD853F","#8B4513","#D2691E"],"finish":"Textured","size":"200x400mm","use":["Exterior Wall","Traditional Homes"],"desc":"Traditional brick-look cladding tiles \u2014 timeless elevation design","image":"https://res.cloudinary.com/deibpflar/image/upload/tilestory/elevation_2.jpg","tags":["brick","traditional","brown","cladding"]},{"id":"TS025","name":"Sandstone Villa Exterior","category":"Elevation","colors":["#F4A460","#DEB887","#D2B48C"],"finish":"Textured","size":"400x600mm","use":["Villa Exterior","Elevation"],"desc":"Natural sandstone-look tiles for luxury villa facades","image":"https://res.cloudinary.com/deibpflar/image/upload/tilestory/elevation_3.jpg","tags":["sandstone","villa","luxury","beige"]},{"id":"TS026","name":"Hexagon Anti-Slip Gray","category":"Parking","colors":["#696969","#A9A9A9","#D3D3D3"],"finish":"Anti-Slip","size":"200mm Hexagon","use":["Parking","Outdoor","Driveway"],"desc":"Durable hexagon outdoor tiles with anti-slip surface \u2014 gray trio pattern","image":"https://res.cloudinary.com/deibpflar/image/upload/tilestory/parking_1.jpg","tags":["hexagon","anti-slip","outdoor","gray"]},{"id":"TS027","name":"Garage Floor Diamond","category":"Parking","colors":["#808080","#696969","#C0C0C0"],"finish":"Anti-Slip","size":"600x600mm","use":["Garage","Parking"],"desc":"Industrial-grade garage flooring with diamond plate pattern \u2014 heavy duty","image":"https://res.cloudinary.com/deibpflar/image/upload/tilestory/parking_2.jpg","tags":["industrial","anti-slip","garage","heavy-duty"]},{"id":"TS028","name":"Outdoor Patio Granite","category":"Parking","colors":["#708090","#696969","#A9A9A9"],"finish":"Textured","size":"600x600mm","use":["Outdoor","Patio","Parking"],"desc":"Natural granite-look outdoor tiles \u2014 weather resistant","image":"https://res.cloudinary.com/deibpflar/image/upload/tilestory/parking_3.jpg","tags":["granite","outdoor","weather-resistant","gray"]},{"id":"TS029","name":"Black Galaxy Premium","category":"Large Slab","colors":["#1C1C1C","#FFD700","#4A4A4A"],"finish":"Polished","size":"1200x2400mm","use":["Living Room","Lobby"],"desc":"Dramatic black granite-look slab with gold flecks \u2014 premium statement flooring","image":"https://res.cloudinary.com/deibpflar/image/upload/tilestory/designer_1.jpg","tags":["black","gold","granite","statement"]},{"id":"TS030","name":"Minimalist White Porcelain","category":"Imported","colors":["#FFFFFF","#F8F8F8","#EBEBEB"],"finish":"Matte","size":"600x600mm","use":["Office","Commercial","Minimalist"],"desc":"Pure white Italian porcelain \u2014 minimalist modern architecture","image":"https://res.cloudinary.com/deibpflar/image/upload/tilestory/imported_tiles_1.jpg","tags":["white","minimalist","italian","modern"]}];
+const PRODUCTS = [{"id":"TS001","name":"Nordic Gray Wood","category":"Flooring","colors":["#8B8B8B","#A9A9A9","#D3D3D3"],"finish":"Matte","size":"600x1200mm","use":["Living Room","Bedroom"],"desc":"Scandinavian-inspired wood-look porcelain with realistic grain texture","image":"https://raw.githubusercontent.com/shriashwin007-cmd/tilestory-assets/main/living_room_1.jpg","tags":["wood-look","modern","gray"]},{"id":"TS002","name":"Carrara White Marble","category":"Flooring","colors":["#F5F5F5","#E8E8E8","#BEBEBE"],"finish":"Polished","size":"800x800mm","use":["Bedroom","Lobby"],"desc":"Classic Italian white marble with subtle gray veining","image":"https://raw.githubusercontent.com/shriashwin007-cmd/tilestory-assets/main/living_room_2.jpg","tags":["marble","luxury","white"]},{"id":"TS003","name":"Warm Oak Plank","category":"Flooring","colors":["#C19A6B","#8B7355","#D2B48C"],"finish":"Matte","size":"200x1200mm","use":["Living Room","Kitchen"],"desc":"Natural oak wood-look tile with warm honey tones","image":"https://raw.githubusercontent.com/shriashwin007-cmd/tilestory-assets/main/living_room_3.jpg","tags":["wood-look","warm","natural"]},{"id":"TS004","name":"Imperial Gray Marble","category":"Flooring","colors":["#A8A8A8","#909090","#C0C0C0"],"finish":"Polished","size":"800x1600mm","use":["Living Room","Dining"],"desc":"Large format gray marble with elegant veining pattern","image":"https://raw.githubusercontent.com/shriashwin007-cmd/tilestory-assets/main/large_slab_4.jpg","tags":["marble","gray","large-format"]},{"id":"TS005","name":"Azure Gold Luxury","category":"Bathroom","colors":["#4682B4","#DAA520","#2F4F4F"],"finish":"Glossy","size":"600x1200mm","use":["Bathroom","Shower"],"desc":"Dramatic blue marble with gold veining — statement bathroom walls","image":"https://raw.githubusercontent.com/shriashwin007-cmd/tilestory-assets/main/bathroom_3.jpg","tags":["luxury","blue","gold","marble"]},{"id":"TS006","name":"Sahara Beige Textured","category":"Bathroom","colors":["#F5DEB3","#D2B48C","#E8D5C4"],"finish":"Matte","size":"300x600mm","use":["Bathroom","Powder Room"],"desc":"Soft beige with ribbed texture accent strip for spa-like bathrooms","image":"https://raw.githubusercontent.com/shriashwin007-cmd/tilestory-assets/main/bathroom_1.jpg","tags":["beige","textured","neutral"]},{"id":"TS007","name":"Nero Marquina Black","category":"Bathroom","colors":["#1C1C1C","#FFFFFF","#DAA520"],"finish":"Polished","size":"600x1200mm","use":["Shower","Feature Wall"],"desc":"Luxurious black marble with white veins — pairs with gold fixtures","image":"https://raw.githubusercontent.com/shriashwin007-cmd/tilestory-assets/main/bathroom_2.jpg","tags":["black","marble","luxury","gold-accent"]},{"id":"TS008","name":"Pearl White Subway","category":"Bathroom","colors":["#FAFAFA","#E0E0E0","#F8F8F8"],"finish":"Glossy","size":"75x150mm","use":["Bathroom","Kitchen Backsplash"],"desc":"Timeless white subway tiles with subtle pearl shimmer","image":"https://raw.githubusercontent.com/shriashwin007-cmd/tilestory-assets/main/bathroom_2.jpg","tags":["white","classic","subway"]},{"id":"TS009","name":"Fes Blue Pattern","category":"Moroccan","colors":["#1E3A8A","#F59E0B","#FBBF24"],"finish":"Matte","size":"200x200mm","use":["Kitchen","Bathroom","Feature Wall"],"desc":"Handcrafted Moroccan encaustic tiles — blue, gold, cream geometric patterns","image":"https://raw.githubusercontent.com/shriashwin007-cmd/tilestory-assets/main/moraccan_1.jpg","tags":["pattern","blue","traditional","handcrafted"]},{"id":"TS010","name":"Marrakech Kitchen Mix","category":"Moroccan","colors":["#2563EB","#F97316","#78716C"],"finish":"Matte","size":"200x200mm","use":["Kitchen Floor","Backsplash"],"desc":"Mixed Moroccan pattern tiles — kitchen and dining floors","image":"https://raw.githubusercontent.com/shriashwin007-cmd/tilestory-assets/main/moraccan_2.jpg","tags":["pattern","blue","orange","mix"]},{"id":"TS011","name":"Hexwood Gold Accent","category":"Moroccan","colors":["#A0826D","#DAA520","#8B7355"],"finish":"Matte","size":"200x230mm","use":["Feature Wall","Living Room"],"desc":"Geometric hexagon tiles with wood texture and gold brass inlay","image":"https://raw.githubusercontent.com/shriashwin007-cmd/tilestory-assets/main/moraccan_3.jpg","tags":["hexagon","wood","gold","geometric"]},{"id":"TS012","name":"Calacatta Gold Vein","category":"Large Slab","colors":["#FAFAFA","#DAA520","#E8E8E8"],"finish":"Polished","size":"1600x3200mm","use":["Living Room","Lobby","Feature Wall"],"desc":"Book-matched Calacatta marble slabs with dramatic gold veining","image":"https://raw.githubusercontent.com/shriashwin007-cmd/tilestory-assets/main/large_slab_2.jpg","tags":["marble","gold","book-matched","XXL"]},{"id":"TS013","name":"Silver Cloud Marble","category":"Large Slab","colors":["#D3D3D3","#A9A9A9","#F5F5F5"],"finish":"Polished","size":"800x1600mm","use":["Living Room","Dining"],"desc":"Contemporary gray marble with cloud-like patterns — large format slabs","image":"https://raw.githubusercontent.com/shriashwin007-cmd/tilestory-assets/main/large_slab_3.jpg","tags":["gray","marble","contemporary"]},{"id":"TS014","name":"Platinum Vein Slab","category":"Large Slab","colors":["#C0C0C0","#808080","#EBEBEB"],"finish":"Polished","size":"1200x2400mm","use":["Lobby","Living Room"],"desc":"Premium gray marble slabs with linear platinum veining","image":"https://raw.githubusercontent.com/shriashwin007-cmd/tilestory-assets/main/large_slab_1.jpg","tags":["gray","marble","linear","premium"]},{"id":"TS015","name":"Emperador Gold XL","category":"Large Slab","colors":["#8B7355","#DAA520","#D2B48C"],"finish":"Polished","size":"1600x3200mm","use":["Feature Wall","Lobby"],"desc":"Statement brown marble slabs with symmetrical gold accents","image":"https://raw.githubusercontent.com/shriashwin007-cmd/tilestory-assets/main/large_slab_2.jpg","tags":["brown","gold","statement","XXL"]},{"id":"TS016","name":"Industrial Concrete Gray","category":"Designer","colors":["#808080","#696969","#D3D3D3"],"finish":"Matte","size":"600x600mm","use":["Dining","Office","Commercial"],"desc":"Modern industrial concrete-look tiles with natural texture variation","image":"https://raw.githubusercontent.com/shriashwin007-cmd/tilestory-assets/main/designer_2.jpg","tags":["concrete","industrial","gray"]},{"id":"TS017","name":"Terracotta Earth Tone","category":"Designer","colors":["#CD5C5C","#D2691E","#BC8F8F"],"finish":"Matte","size":"300x300mm","use":["Bedroom","Rustic Spaces"],"desc":"Warm terracotta clay tiles — Mediterranean charm for bedrooms","image":"https://raw.githubusercontent.com/shriashwin007-cmd/tilestory-assets/main/designer_3.jpg","tags":["terracotta","warm","rustic","earth"]},{"id":"TS018","name":"3D Wave White Panel","category":"Designer","colors":["#FFFFFF","#F5F5F5","#E8E8E8"],"finish":"Matte","size":"400x1200mm","use":["Feature Wall","Bedroom"],"desc":"Sculptural 3D wave pattern ceramic panels — creates depth and shadow play","image":"https://raw.githubusercontent.com/shriashwin007-cmd/tilestory-assets/main/imported_tiles_1.jpg","tags":["3D","white","sculptural","modern"]},{"id":"TS019","name":"Geometric Wood Mosaic","category":"Designer","colors":["#8B7355","#DAA520","#A0826D"],"finish":"Matte","size":"Custom Mosaic","use":["Feature Wall","Accent"],"desc":"Intricate geometric pattern combining wood-look tiles with gold brass inlay","image":"https://raw.githubusercontent.com/shriashwin007-cmd/tilestory-assets/main/moraccan_3.jpg","tags":["geometric","wood","mosaic","gold"]},{"id":"TS020","name":"Statuario Venato Italian","category":"Imported","colors":["#FAFAFA","#808080","#E8E8E8"],"finish":"Polished","size":"600x1200mm","use":["Lobby","Bathroom","Living Room"],"desc":"Premium Italian white marble with bold gray veining — imported from Carrara","image":"https://raw.githubusercontent.com/shriashwin007-cmd/tilestory-assets/main/imported_tiles_1.jpg","tags":["italian","marble","white","premium"]},{"id":"TS021","name":"Spanish Concrete Modern","category":"Imported","colors":["#A8A8A8","#696969","#D3D3D3"],"finish":"Matte","size":"600x1200mm","use":["Dining","Living Room"],"desc":"Contemporary Spanish porcelain with authentic concrete texture","image":"https://raw.githubusercontent.com/shriashwin007-cmd/tilestory-assets/main/imported_tiles_2.jpg","tags":["spanish","concrete","modern","porcelain"]},{"id":"TS022","name":"Tuscan Clay Rustic","category":"Imported","colors":["#CD5C5C","#D2691E","#8B4513"],"finish":"Matte","size":"300x300mm","use":["Bedroom","Villa"],"desc":"Authentic Italian terracotta imported from Tuscany — rustic warmth","image":"https://raw.githubusercontent.com/shriashwin007-cmd/tilestory-assets/main/imported_tiles_3.jpg","tags":["italian","terracotta","rustic","tuscan"]},{"id":"TS023","name":"Modern Beige Facade","category":"Elevation","colors":["#F5DEB3","#D2B48C","#E8D5C4"],"finish":"Matte","size":"600x600mm","use":["Exterior Wall","Facade"],"desc":"Contemporary beige elevation tiles — sleek modern architecture","image":"https://raw.githubusercontent.com/shriashwin007-cmd/tilestory-assets/main/elevation_1.jpg","tags":["beige","modern","facade","exterior"]},{"id":"TS024","name":"Classic Brick Cladding","category":"Elevation","colors":["#CD853F","#8B4513","#D2691E"],"finish":"Textured","size":"200x400mm","use":["Exterior Wall","Traditional Homes"],"desc":"Traditional brick-look cladding tiles — timeless elevation design","image":"https://raw.githubusercontent.com/shriashwin007-cmd/tilestory-assets/main/elevation_2.jpg","tags":["brick","traditional","brown","cladding"]},{"id":"TS025","name":"Sandstone Villa Exterior","category":"Elevation","colors":["#F4A460","#DEB887","#D2B48C"],"finish":"Textured","size":"400x600mm","use":["Villa Exterior","Elevation"],"desc":"Natural sandstone-look tiles for luxury villa facades","image":"https://raw.githubusercontent.com/shriashwin007-cmd/tilestory-assets/main/elevation_3.jpg","tags":["sandstone","villa","luxury","beige"]},{"id":"TS026","name":"Hexagon Anti-Slip Gray","category":"Parking","colors":["#696969","#A9A9A9","#D3D3D3"],"finish":"Anti-Slip","size":"200mm Hexagon","use":["Parking","Outdoor","Driveway"],"desc":"Durable hexagon outdoor tiles with anti-slip surface — gray trio pattern","image":"https://raw.githubusercontent.com/shriashwin007-cmd/tilestory-assets/main/parking_1.jpg","tags":["hexagon","anti-slip","outdoor","gray"]},{"id":"TS027","name":"Garage Floor Diamond","category":"Parking","colors":["#808080","#696969","#C0C0C0"],"finish":"Anti-Slip","size":"600x600mm","use":["Garage","Parking"],"desc":"Industrial-grade garage flooring with diamond plate pattern — heavy duty","image":"https://raw.githubusercontent.com/shriashwin007-cmd/tilestory-assets/main/parking_2.jpg","tags":["industrial","anti-slip","garage","heavy-duty"]},{"id":"TS028","name":"Outdoor Patio Granite","category":"Parking","colors":["#708090","#696969","#A9A9A9"],"finish":"Textured","size":"600x600mm","use":["Outdoor","Patio","Parking"],"desc":"Natural granite-look outdoor tiles — weather resistant","image":"https://raw.githubusercontent.com/shriashwin007-cmd/tilestory-assets/main/parking_3.jpg","tags":["granite","outdoor","weather-resistant","gray"]},{"id":"TS029","name":"Black Galaxy Premium","category":"Large Slab","colors":["#1C1C1C","#FFD700","#4A4A4A"],"finish":"Polished","size":"1200x2400mm","use":["Living Room","Lobby"],"desc":"Dramatic black granite-look slab with gold flecks — premium statement flooring","image":"https://raw.githubusercontent.com/shriashwin007-cmd/tilestory-assets/main/designer_1.jpg","tags":["black","gold","granite","statement"]},{"id":"TS030","name":"Minimalist White Porcelain","category":"Imported","colors":["#FFFFFF","#F8F8F8","#EBEBEB"],"finish":"Matte","size":"600x600mm","use":["Office","Commercial","Minimalist"],"desc":"Pure white Italian porcelain — minimalist modern architecture","image":"https://raw.githubusercontent.com/shriashwin007-cmd/tilestory-assets/main/imported_tiles_1.jpg","tags":["white","minimalist","italian","modern"]}];
 
 // Derive filter options
 const allCategories = [...new Set(PRODUCTS.map(p=>p.category))];
@@ -2305,6 +2644,283 @@ function sendWA(){
   const m=document.getElementById('cMsg').value.trim()||'I would like to enquire about your tiles.';
   window.open('https://wa.me/919876543210?text='+encodeURIComponent('Hi Tile Story!\n\nName: '+n+'\nPhone: '+p+'\n\nMessage: '+m),'_blank');
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ============ AI CHATBOT (GROQ API - CREATIVE MODE) ============
+const AI_CONFIG = {
+  apiKey: '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',
+  model: 'llama-3.3-70b-versatile',
+  apiUrl: 'https://api.groq.com/openai/v1/chat/completions'
+};
+
+let aiConversation = [];
+
+document.getElementById('aiChatFab').addEventListener('click', openAIChat);
+
+function openAIChat(){
+  document.getElementById('aiChatFab').classList.add('open');
+  document.getElementById('aiChatPanel').classList.add('open');
+  
+  if(!AI_CONFIG.apiKey){
+    setTimeout(()=>{
+      addAIMessage('assistant', '⚠️ **Setup Required**\n\nTo use the AI assistant, you need a free Groq API key.\n\n**Steps:**\n1. Get free key: https://console.groq.com/\n2. Sign up (no credit card needed)\n3. Copy your API key\n4. Open browser console (F12)\n5. Run: `AI_CONFIG.apiKey = \'your-key-here\'`\n6. Refresh and try again!\n\n*Completely FREE forever - 14,400 requests/day*');
+    }, 300);
+  }
+}
+
+function closeAIChat(){
+  document.getElementById('aiChatFab').classList.remove('open');
+  document.getElementById('aiChatPanel').classList.remove('open');
+}
+
+function sendSuggestion(el){
+  const text = el.textContent;
+  document.getElementById('aiChatInput').value = text;
+  sendAIMessage();
+}
+
+async function sendAIMessage(){
+  const input = document.getElementById('aiChatInput');
+  const msg = input.value.trim();
+  if(!msg) return;
+  
+  input.value = '';
+  
+  const welcome = document.querySelector('.ai-welcome');
+  if(welcome) welcome.style.display = 'none';
+  
+  addAIMessage('user', msg);
+  
+  if(!AI_CONFIG.apiKey){
+    addAIMessage('assistant', '⚠️ Please set your API key first. See instructions above.');
+    return;
+  }
+  
+  showTyping();
+  aiConversation.push({role: 'user', content: msg});
+  
+  try {
+    const response = await callGroqAPI();
+    hideTyping();
+    addAIMessage('assistant', response);
+    aiConversation.push({role: 'assistant', content: response});
+    
+    if(aiConversation.length > 10) aiConversation = aiConversation.slice(-10);
+    
+  } catch(err){
+    hideTyping();
+    addAIMessage('assistant', `❌ Error: ${err.message}\n\nPlease check your API key or try again.`);
+    console.error('Groq API Error:', err);
+  }
+}
+
+async function callGroqAPI(){
+  const systemPrompt = buildCreativeSystemPrompt();
+  
+  const messages = [
+    {role: 'system', content: systemPrompt},
+    ...aiConversation
+  ];
+  
+  const response = await fetch(AI_CONFIG.apiUrl, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${AI_CONFIG.apiKey}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      model: AI_CONFIG.model,
+      messages: messages,
+      temperature: 0.8,
+      max_tokens: 1200
+    })
+  });
+  
+  if(!response.ok){
+    const error = await response.json();
+    throw new Error(error.error?.message || `API Error: ${response.status}`);
+  }
+  
+  const data = await response.json();
+  return data.choices[0].message.content;
+}
+
+function buildCreativeSystemPrompt(){
+  const productData = PRODUCTS.map(p => ({
+    id: p.id,
+    name: p.name,
+    category: p.category,
+    finish: p.finish,
+    size: p.size,
+    use: p.use.join(', '),
+    desc: p.desc,
+    colors: p.colors,
+    tags: p.tags.join(', ')
+  }));
+  
+  return `You are an EXPERT tile designer assistant for Tile Story in Chennai. You understand VIBES, MOODS, AESTHETICS, and CREATIVE IDEAS - not just keywords.
+
+YOUR SUPERPOWER: Understanding what customers MEAN, even when they don't know exact terms or use broken English.
+
+PRODUCT CATALOG:
+${JSON.stringify(productData, null, 2)}
+
+HOW YOU THINK:
+
+**Creative/Vibe Matching:**
+- "ocean sunset vibe" = Blue + Gold tones (TS005 Azure Gold)
+- "feel like luxury hotel" = Marble, polished, premium (TS012 Calacatta)
+- "my wife like shiny gold" = Gold accents, glossy finish (TS005, TS012)
+- "need peaceful bathroom" = Soft colors, spa vibe (TS006 Sahara Beige)
+- "want look expensive but not too much money" = Premium look, mid-budget (TS009 Moroccan)
+- "something different, not everyone have" = Designer, unique patterns (TS009, TS018, TS019)
+
+**Broken English Understanding:**
+- "i need tile make bathroom nice look modern" = modern bathroom tiles
+- "floor living room what best" = living room flooring
+- "wife say she want gold colour shiny" = gold accent tiles, glossy finish
+- "parking outside water no problem" = outdoor/parking, weather-resistant
+
+**Color/Mood Matching:**
+- Blue/Ocean/Cool = TS005, TS009
+- Gold/Luxury/Rich = TS005, TS012, TS015
+- White/Clean/Simple = TS002, TS008, TS020, TS030
+- Warm/Cozy/Natural = TS003, TS017, TS022
+- Dark/Bold/Dramatic = TS007, TS029
+- Pattern/Artistic/Unique = TS009, TS010, TS018, TS019
+
+**Your Response Style:**
+1. UNDERSTAND their vibe/creativity first
+2. Ask 1 clarifying question if too vague (which room? budget range?)
+3. Recommend 2-3 products that MATCH THE FEELING they described
+4. Explain WHY each tile gives that vibe/aesthetic
+5. ALWAYS include product ID like (TS005) so cards can render
+6. Be friendly, conversational, understand broken English
+7. Keep responses under 200 words
+
+**Example Conversations:**
+
+User: "i want bathroom feel like bali resort spa"
+You: "Ooh I love that tropical spa vibe! For that Bali resort feel, here's what I'm thinking:
+
+**Sahara Beige Textured (TS006)** - The soft beige with ribbed texture creates that natural, earthy spa atmosphere. Perfect for walls. The matte finish feels organic and calming.
+
+**Warm Oak Plank (TS003)** - Wood-look tiles with warm honey tones bring that tropical warmth. Great for floors, gives the natural Bali aesthetic without real wood maintenance.
+
+Want to add some pattern accents or keep it minimal and zen?"
+
+User: "my wife she like gold things shiny make bathroom luxury"
+You: "Perfect! Your wife has great taste 😊 For that luxurious gold and shine:
+
+**Azure Gold Luxury (TS005)** - WOW factor! Dramatic blue marble with REAL gold veining. Super glossy finish that shines beautifully. This is the showstopper.
+
+**Calacatta Gold Vein (TS012)** - Classic white marble with gold accents. More subtle than the blue but still very premium and elegant.
+
+Both are easy to clean (glossy finish) and will make the bathroom feel like a 5-star hotel! Which vibe - bold blue or classic white?"
+
+User: "need something not expensive but look good modern kitchen wall"
+You: "Got it! Modern kitchen backsplash, good looks, smart budget:
+
+**Fes Blue Pattern (TS009)** - These Moroccan tiles are budget-friendly but look SO artistic and modern. The blue geometric patterns become the focal point of your kitchen.
+
+**Pearl White Subway (TS008)** - Classic subway tiles never go out of style. Clean, modern, and super affordable. The pearl shimmer adds a premium touch.
+
+Both are perfect for kitchen walls and won't break the bank! Do you want colorful/artistic or clean/minimal?"
+
+REMEMBER: 
+- Understand FEELINGS and VIBES, not just keywords
+- Handle broken English gracefully
+- Always include (TS###) for product cards
+- Be helpful, friendly, creative
+- Match the energy of their request`;
+}
+
+function addAIMessage(role, content){
+  const container = document.getElementById('aiChatMessages');
+  
+  const msgDiv = document.createElement('div');
+  msgDiv.className = `ai-msg ${role}`;
+  
+  const avatar = document.createElement('div');
+  avatar.className = 'ai-msg-avatar';
+  avatar.textContent = role === 'assistant' ? '🤖' : '👤';
+  
+  const contentDiv = document.createElement('div');
+  contentDiv.className = 'ai-msg-content';
+  
+  if(role === 'assistant' && content.includes('(TS')){
+    const parsed = parseProductRecommendations(content);
+    contentDiv.innerHTML = parsed;
+  } else {
+    contentDiv.innerHTML = content.replace(/\n/g, '<br>').replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  }
+  
+  msgDiv.appendChild(avatar);
+  msgDiv.appendChild(contentDiv);
+  container.appendChild(msgDiv);
+  
+  container.scrollTop = container.scrollHeight;
+}
+
+function parseProductRecommendations(text){
+  const matches = text.match(/\(TS\d{3}\)/g);
+  if(!matches) return text.replace(/\n/g, '<br>').replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  
+  let html = text.replace(/\n/g, '<br>').replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  
+  const productIds = [...new Set(matches.map(m => m.replace(/[()]/g, '')))];
+  const cards = productIds.map(id => {
+    const p = PRODUCTS.find(x => x.id === id);
+    if(!p) return '';
+    return `
+      <div class="ai-product-card" onclick="openModal('${p.id}')">
+        <img class="ai-product-img" src="${p.image}" alt="${p.name}" loading="lazy">
+        <div class="ai-product-info">
+          <h4 class="ai-product-name">${p.name}</h4>
+          <div class="ai-product-meta">${p.category} · ${p.size} · ${p.finish}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+  
+  return html + cards;
+}
+
+function showTyping(){
+  const container = document.getElementById('aiChatMessages');
+  const typing = document.createElement('div');
+  typing.className = 'ai-typing';
+  typing.id = 'aiTyping';
+  typing.innerHTML = `
+    <div class="ai-msg-avatar" style="background:linear-gradient(135deg,var(--teal-primary),var(--yellow-bright))">🤖</div>
+    <div class="ai-typing-dots">
+      <span class="ai-typing-dot"></span>
+      <span class="ai-typing-dot"></span>
+      <span class="ai-typing-dot"></span>
+    </div>
+  `;
+  container.appendChild(typing);
+  container.scrollTop = container.scrollHeight;
+}
+
+function hideTyping(){
+  const typing = document.getElementById('aiTyping');
+  if(typing) typing.remove();
+}
+
+// ============ END CHATBOT ============
+
 </script>
 </body>
 </html>
